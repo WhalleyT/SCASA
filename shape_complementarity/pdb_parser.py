@@ -1,4 +1,6 @@
 import argparse
+
+from .pdb_calculations import PDBCalculations
 from pathlib import Path
 
 
@@ -31,7 +33,7 @@ class ChainNotFoundException(Exception):
         super().__init__(self.arg)
 
 
-class Complex:
+class Complex(PDBCalculations):
     """
     Object for defining and holding a PDB complex
     PDBFile: path to PDB file
