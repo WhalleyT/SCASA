@@ -42,7 +42,7 @@ class Complex(PDBCalculations):
     Verbose: Extra logging
     """
 
-    def __init__(self, pdb_file, complex_1, complex_2=None, verbose=False):
+    def __init__(self, pdb_file, complex_1, complex_2=None, verbose=False, tmp_directory="/tmp"):
         self.pdb_ranges = {"ATOM": range(0, 4),
                            "SERIAL": range(6, 11),
                            "ATOM_NAME": range(12, 16),
@@ -64,6 +64,11 @@ class Complex(PDBCalculations):
         self.complex_2 = complex_2
         self.chains = None
         self.verbose = verbose
+        self.tmp_directory = tmp_directory
+
+        #for time being assume pdb file is .pdb
+        #todo change extension pattern
+        self.pdb_name = pdb_file.split("/")[-1].replace(".pdb", "")
 
         self.verify_chains()
         self.chain_string_to_list()
