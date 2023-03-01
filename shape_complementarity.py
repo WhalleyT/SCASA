@@ -6,7 +6,7 @@ def main():
 
     #set up class for complex
     complex = shape_complementarity.pdb_parser.Complex(args.infile, args.complex_1, args.complex_2, verbose=True)
-    complex.sasa()
+    complex.sasa(complex_level="X")
 
 
 if __name__ == "__main__":
