@@ -139,3 +139,19 @@ class Complex(PDBCalculations):
         """
         self.complex_1 = list(self.complex_1)
         self.complex_2 = list(self.complex_2)
+
+    def subset_pdb(self, chains, pdb_out):
+        outfile = open(pdb_out, "w")
+
+        with open(self.pdb_file) as f:
+            for line in f:
+                if line.startswith("ATOM"):
+                    indexes = list(self.pdb_ranges["CHAIN"])
+                    contents = "".join([line[x] for x in indexes]).strip()
+                    if contents in chains:
+                        outfile.write(line)
+
+    def create_sub_pdbs(self):
+        self.subset_pdb(self.complex_1, "tmp/complex_1.pdb")
+        self.subset_pdb(self.complex_2, "tmp/complex_2.pdb")
+        self.subset_pdb(self.complex_1 + self.complex_2, "tmp/complex_1_2.pdb")
