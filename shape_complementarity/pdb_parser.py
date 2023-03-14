@@ -73,6 +73,10 @@ class Complex(PDBCalculations):
         self.verify_chains()
         self.chain_string_to_list()
 
+        self.complex_1_asa_df = None
+        self.complex_2_asa_df = None
+        self.complex_1_2_asa_df = None
+
         if self.verbose:
             print("PDB successfully validated")
             print(f"Complex 1: {''.join(self.complex_1)}")

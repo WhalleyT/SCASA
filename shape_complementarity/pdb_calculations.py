@@ -2,6 +2,8 @@ import os
 from Bio.PDB import PDBParser
 from Bio.PDB import ShrakeRupley
 
+import pandas as pd
+
 class PDBCalculations:
     def __init__(self):
         pass
@@ -30,12 +32,28 @@ class PDBCalculations:
     def atom_sasa(self):
         self.complex_sasa = self.sasa(complex_level="A")
 
+
+    def create_residue_asa_df(self, complex):
+        df_list = []
+
+        for chain in complex[0]:
+                for res in chain:
+                    hetflag, resseq, icode = res.get_id()
+                    df_list.append([chain.id, resseq, res.get_resname(), res.sasa])
+
+        return pd.DataFrame(df_list, columns=["Chain", "Residue", "Amino_Acid", "ASA"])
+
+
     def complex_sasa(self):
         residue_sasa_complex_1 = self.sasa("complex_1", "tmp/complex_1.pdb")
         residue_sasa_complex_2 = self.sasa("complex_2", "tmp/complex_2.pdb")
         residue_sasa_complex_1_2 = self.sasa("complex_1_2", "tmp/complex_1_2.pdb")
 
-        print(residue_sasa_complex_1)
+        self.complex_1_asa_df = self.create_residue_asa_df(residue_sasa_complex_1)
+        self.complex_2_asa_df = self.create_residue_asa_df(residue_sasa_complex_2)
+        self.complex_1_2_asa_df = self.create_residue_asa_df(residue_sasa_complex_1_2)
+
+        print(self.complex_1_asa_df[self.complex_1_asa_df["Chain"] == "C"])
 
 
 
