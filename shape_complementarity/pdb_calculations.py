@@ -4,6 +4,15 @@ from Bio.PDB import ShrakeRupley
 
 import pandas as pd
 
+class PDBLevelNotFound(Exception):
+    """
+    Custom exception raised the PDB level is wrong
+    """
+
+    def __init__(self, arg):
+        self.arg = arg
+        super().__init__(self.arg)
+
 class PDBCalculations:
     def __init__(self):
         pass
@@ -14,6 +23,10 @@ class PDBCalculations:
         We will use this to compute BSA by taking ASA(complex_1 alone) - ASA(complex_1 bound)
         :return: struct, biopython struct obj
         """
+
+        if complex_level not in ["S", "C", "R", "A"]:
+            raise PDBLevelNotFound(f"Complex level {complex_level} in complex_1 was not found in PDB file {self.pdb_file}")
+
         p = PDBParser(QUIET=1)
         struct = p.get_structure(name, file)
         sr = ShrakeRupley()
@@ -52,8 +65,5 @@ class PDBCalculations:
         self.complex_1_asa_df = self.create_residue_asa_df(residue_sasa_complex_1)
         self.complex_2_asa_df = self.create_residue_asa_df(residue_sasa_complex_2)
         self.complex_1_2_asa_df = self.create_residue_asa_df(residue_sasa_complex_1_2)
-
-        print(self.complex_1_asa_df[self.complex_1_asa_df["Chain"] == "C"])
-
 
 

@@ -1,8 +1,12 @@
+#!/usr/bin/env python
+
+
 import shape_complementarity.pdb_parser
+import shape_complementarity.cli
 
 
-def main():
-    args =  shape_complementarity.pdb_parser.parse_args()
+def asa():
+    args = shape_complementarity.cli.parse_args()
 
     #set up class for complex
     complex = shape_complementarity.pdb_parser.Complex(args.infile, args.complex_1, args.complex_2, verbose=True)
@@ -12,4 +16,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    asa()
