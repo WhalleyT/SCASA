@@ -1,7 +1,7 @@
 # SCASA: Shape Complementarity and Surface Area
 
 ## What is Shape Complementarity?
-Shape Complementarity (SC) [Lawrence and Colman, 1993](https://pubmed.ncbi.nlm.nih.gov/8263940/) is a measure of "goodness of fit" between two protein interfaces. 
+Shape Complementarity (SC) ([Lawrence and Colman, 1993])(https://pubmed.ncbi.nlm.nih.gov/8263940/) is a measure of "goodness of fit" between two protein interfaces. 
 It ranges from 0 to 1, where 1 is maximum compatibility. It relies on the relative shape of the two interfaces between each other. It has been utilised to explore the
 relation ship between antibody/T-cell receptor and antigen.
 
