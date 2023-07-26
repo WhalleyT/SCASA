@@ -5,17 +5,19 @@ import shape_complementarity.pdb_parser
 import shape_complementarity.cli
 
 
-def asa():
+def main():
     args = shape_complementarity.cli.parse_args()
 
     #set up class for complex
-    complex = shape_complementarity.pdb_parser.Complex(args.infile, args.complex_1, args.complex_2, verbose=True,
-                                                       distance=6)
 
-    #complex.create_sub_pdbs()
-    #complex.complex_sasa()
-    complex.sc()
+    complex = shape_complementarity.pdb_parser.Complex(args.infile, args.complex_1, args.complex_2, verbose=True,
+                                                       distance=args.distance)
+    if args.command == "asa":
+        complex.create_sub_pdbs()
+        complex.complex_sasa()
+    if args.command == "sc":
+        complex.sc()
 
 
 if __name__ == "__main__":
-    asa()
+    main()
