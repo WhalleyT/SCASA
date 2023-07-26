@@ -53,7 +53,7 @@ The specific flags for ```sc``` are:
 ```
 
 So to run sc an example command line argument would be: ```SCASA sc --pdb test/data/1FYT.pdb --complex_1 DE --complex_2 CAB --distance 4.0```. and
-an example for asa would be ```SCASA asa --pdb test/data/1FYT.pdb --complex_1 DE --complex_2 CAB --level R```
+an example for asa would be ```SCASA asa --pdb test/data/1FYT.pdb --complex_1 DE --complex_2 CAB --level R```.
 
 ### Module
 SCASA can be imported as a module using ```import scasa```.

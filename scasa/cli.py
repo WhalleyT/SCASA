@@ -43,7 +43,6 @@ def parse_args():
 
     args = parser.parse_args()
 
-    print(args)
     if args.command == "asa":
         if args.asa_level not in ["S", "C", "R", "A"]:
             sys.exit("--level/-L must be one of the following: S, C, R, A")
@@ -55,7 +54,7 @@ def parse_args():
         else:
             return args
     else:
-        parser.print_usage()
+        #parser.print_usage()
         parser.print_help()
         sys.exit()
 
