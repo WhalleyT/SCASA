@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
      name='SCASA',
      version='0.1',
-     scripts=['SCASA'] ,
+     scripts=['SCASA'],
      author="Tom Whalley",
      author_email="whalleyt@cardiff.ac.uk",
      description="Python package for the calculation of buried and available surface"

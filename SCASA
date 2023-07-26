@@ -9,10 +9,12 @@ def asa():
     args = shape_complementarity.cli.parse_args()
 
     #set up class for complex
-    complex = shape_complementarity.pdb_parser.Complex(args.infile, args.complex_1, args.complex_2, verbose=True)
+    complex = shape_complementarity.pdb_parser.Complex(args.infile, args.complex_1, args.complex_2, verbose=True,
+                                                       distance=6)
 
-    complex.create_sub_pdbs()
-    complex.complex_sasa()
+    #complex.create_sub_pdbs()
+    #complex.complex_sasa()
+    complex.sc()
 
 
 if __name__ == "__main__":

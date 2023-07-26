@@ -1,4 +1,5 @@
-from .pdb_calculations import PDBCalculations
+from .available_surface_area import SurfaceArea
+from .shape_complementarity import ShapeComplementarity
 from pathlib import Path
 
 
@@ -12,7 +13,7 @@ class ChainNotFoundException(Exception):
         super().__init__(self.arg)
 
 
-class Complex(PDBCalculations):
+class Complex(SurfaceArea, ShapeComplementarity):
     """
     Object for defining and holding a PDB complex
     PDBFile: path to PDB file
@@ -21,7 +22,7 @@ class Complex(PDBCalculations):
     Verbose: Extra logging
     """
 
-    def __init__(self, pdb_file, complex_1, complex_2=None, verbose=False, tmp_directory="/tmp"):
+    def __init__(self, pdb_file, complex_1, complex_2=None, verbose=False, tmp_directory="/tmp", distance=4):
         self.pdb_ranges = {"ATOM": range(0, 4),
                            "SERIAL": range(6, 11),
                            "ATOM_NAME": range(12, 16),
@@ -44,6 +45,8 @@ class Complex(PDBCalculations):
         self.chains = None
         self.verbose = verbose
         self.tmp_directory = tmp_directory
+
+        self.distance = distance
 
         #for time being assume pdb file is .pdb
         #todo change extension pattern

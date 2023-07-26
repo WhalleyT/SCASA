@@ -13,7 +13,7 @@ class PDBLevelNotFound(Exception):
         self.arg = arg
         super().__init__(self.arg)
 
-class PDBCalculations:
+class SurfaceArea:
     def __init__(self):
         pass
 
@@ -33,7 +33,7 @@ class PDBCalculations:
         sr.compute(struct, level=complex_level)
         return struct
 
-    def complex_sasa(self):
+    def structure_sasa(self):
         self.complex_sasa = self.sasa(complex_level="S")
 
     def residue_sasa(self):
