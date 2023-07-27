@@ -115,4 +115,6 @@ class ShapeComplementarity:
             print("Complex 2 contains %i atoms within %i Angstroms of Complex 1" \
                   %(len(complex2.residues), self.distance))
 
+            print(complex1.coords[:,1])
+
 

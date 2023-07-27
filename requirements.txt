@@ -1,0 +1,6 @@
+pybind11
+Bio==1.5.9
+biopython==1.80
+numpy==1.24.1
+pandas==2.0.0
+scipy==1.11.1

@@ -1,5 +1,7 @@
 from .available_surface_area import SurfaceArea
 from .shape_complementarity import ShapeComplementarity
+
+
 from pathlib import Path
 
 
@@ -7,7 +9,6 @@ class ChainNotFoundException(Exception):
     """
     Custom exception raised when there are no variants detected
     """
-
     def __init__(self, arg):
         self.arg = arg
         super().__init__(self.arg)
@@ -22,7 +23,7 @@ class Complex(SurfaceArea, ShapeComplementarity):
     Verbose: Extra logging
     """
 
-    def __init__(self, pdb_file, complex_1, complex_2=None, verbose=False, tmp_directory="/tmp", distance=4):
+    def __init__(self, pdb_file, complex_1, complex_2=None, verbose=False, tmp_directory="/tmp", distance=8):
         self.pdb_ranges = {"ATOM": range(0, 4),
                            "SERIAL": range(6, 11),
                            "ATOM_NAME": range(12, 16),
