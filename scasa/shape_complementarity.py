@@ -42,8 +42,8 @@ class ShapeComplementarity:
         y_coord = self.convert_1D_array(self.get_column("Y_COORD"))
         z_coord = self.convert_1D_array(self.get_column("Z_COORD"))
 
-        complex_1_coords = np.empty((3), float)
-        complex_2_coords = np.empty((3), float)
+        complex_1_created = False
+        complex_2_created = False
 
         complex_1_residues = []
         complex_2_residues = []
@@ -53,19 +53,27 @@ class ShapeComplementarity:
 
         complex_1_at = []
         complex_2_at = []
-
         for x,y,z, c, r, aa, a in zip(x_coord, y_coord, z_coord, chain, resiudes, amino_acids, atoms):
             coord = np.array((x, y, z), "f")
             if c in self.complex_1:
+                print(x,y,z, coord)
                 complex_1_residues.append(r)
                 complex_1_aa.append(aa)
                 complex_1_at.append(a)
-                complex_1_coords = np.append(complex_1_coords, coord, axis=0)
+                if complex_1_created:
+                    complex_1_coords = np.append(complex_1_coords, coord)
+                else:
+                    complex_1_coords = coord
+                    complex_1_created = True
             if c in self.complex_2:
                 complex_2_residues.append(r)
                 complex_2_aa.append(aa)
                 complex_2_at.append(a)
-                complex_2_coords = np.append(complex_2_coords, coord, axis=0)
+                if complex_2_created:
+                    complex_2_coords = np.append(complex_2_coords, coord)
+                else:
+                    complex_2_coords = coord
+                    complex_2_created = True
 
         complex_1_coords = np.reshape(complex_1_coords, (-1, 3))
         complex_2_coords = np.reshape(complex_2_coords, (-1, 3))
@@ -114,7 +122,5 @@ class ShapeComplementarity:
                   %(len(complex1.residues), self.distance))
             print("Complex 2 contains %i atoms within %i Angstroms of Complex 1" \
                   %(len(complex2.residues), self.distance))
-
-            print(complex1.coords[:,1])
 
 
