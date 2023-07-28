@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import scipy.spatial
 
 from scipy.spatial import cKDTree
 from dataclasses import dataclass
@@ -56,7 +57,6 @@ class ShapeComplementarity:
         for x,y,z, c, r, aa, a in zip(x_coord, y_coord, z_coord, chain, resiudes, amino_acids, atoms):
             coord = np.array((x, y, z), "f")
             if c in self.complex_1:
-                print(x,y,z, coord)
                 complex_1_residues.append(r)
                 complex_1_aa.append(aa)
                 complex_1_at.append(a)
@@ -111,6 +111,12 @@ class ShapeComplementarity:
         return PDBCoords(coords=c, amino_acids=aa, atoms=a, residues=res)
 
 
+    def estimate_volume(self, c):
+        est = scipy.spatial.ConvexHull(c)
+        if self.verbose:
+            print(f"Estimated area of complex 1's face is {est.area:.2f}Å\N{SUPERSCRIPT THREE}")
+        return est.area
+
     def sc(self):
         complex1, complex2 = self.create_interface()
 
@@ -123,4 +129,8 @@ class ShapeComplementarity:
             print("Complex 2 contains %i atoms within %i Angstroms of Complex 1" \
                   %(len(complex2.residues), self.distance))
 
+        a1 = self.estimate_volume(complex1.coords)
+        a2 = self.estimate_volume(complex2.coords)
 
+        dot_density_1 = self.density *  a1
+        dot_density_1 = self.density * a1

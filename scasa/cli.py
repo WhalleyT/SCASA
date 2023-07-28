@@ -40,6 +40,8 @@ def parse_args():
     sc.add_argument("--distance", "-D", dest="distance", type=float, default=8.0, required=False,
                         help="Distance parameter used for generating an interface between the two surfaces. Atoms with"
                              " no neighbours within this range are excluded")
+    sc.add_argument("--dot-density", "-Dd", dest="density", type=float, default=1.5, required=False,
+                    help="Density sampling value per Angstrom of area of the interface")
 
     args = parser.parse_args()
 
@@ -53,6 +55,10 @@ def parse_args():
     elif args.command == "sc":
         if args.distance <= 0:
             sys.exit("--distance/-D must be non-negative")
+            parser.print_help()
+            sys.exit(1)
+        elif args.density <= 0:
+            sys.exit("--dot-density/-Dd must be non-negative")
             parser.print_help()
             sys.exit(1)
         else:
