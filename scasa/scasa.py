@@ -23,7 +23,8 @@ class Complex(SurfaceArea, ShapeComplementarity):
     Verbose: Extra logging
     """
 
-    def __init__(self, pdb_file, complex_1, complex_2=None, verbose=False, tmp_directory="/tmp", distance=8):
+    def __init__(self, pdb_file, complex_1, complex_2=None, verbose=False, tmp_directory="/tmp",
+                 distance=8, density=1.5):
         self.pdb_ranges = {"ATOM": range(0, 4),
                            "SERIAL": range(6, 11),
                            "ATOM_NAME": range(12, 16),
@@ -47,6 +48,8 @@ class Complex(SurfaceArea, ShapeComplementarity):
         self.verbose = verbose
         self.tmp_directory = tmp_directory
 
+        #variables inhereted from SC
+        self.density = density
         self.distance = distance
 
         #for time being assume pdb file is .pdb
