@@ -3,13 +3,14 @@
 from scasa import scasa
 from scasa import cli
 
+
 def main():
     args = cli.parse_args()
 
-    #set up class for complex
+    # set up class for complex
 
     complex = scasa.Complex(args.infile, args.complex_1, args.complex_2, verbose=True,
-                                  distance=args.distance)
+                            distance=args.distance)
     if args.command == "asa":
         complex.create_sub_pdbs()
         complex.complex_sasa()
