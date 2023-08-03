@@ -9,13 +9,13 @@ def main():
 
     # set up class for complex
 
-    complex = scasa.Complex(args.infile, args.complex_1, args.complex_2, verbose=True,
-                            distance=args.distance)
+    pdb_complex = scasa.Complex(args.infile, args.complex_1, args.complex_2, verbose=True,
+                            distance=args.distance, weight=args.weight)
     if args.command == "asa":
-        complex.create_sub_pdbs()
-        complex.complex_sasa()
+        pdb_complex.create_sub_pdbs()
+        pdb_complex.complex_sasa()
     if args.command == "sc":
-        complex.sc()
+        pdb_complex.sc()
 
 
 if __name__ == "__main__":

@@ -24,7 +24,7 @@ class Complex(SurfaceArea, ShapeComplementarity):
     """
 
     def __init__(self, pdb_file, complex_1, complex_2=None, verbose=False, tmp_directory="/tmp", distance=8,
-                 density=1.5):
+                 density=1.5, weight=0.5):
         super().__init__()
         self.pdb_ranges = {"ATOM": range(0, 4),
                            "SERIAL": range(6, 11),
@@ -52,6 +52,7 @@ class Complex(SurfaceArea, ShapeComplementarity):
         # variables inherited from SC
         self.density = density
         self.distance = distance
+        self.weight = weight
 
         # for time being assume pdb file is .pdb
         # todo change extension pattern

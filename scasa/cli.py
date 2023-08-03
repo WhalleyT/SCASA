@@ -43,6 +43,8 @@ def parse_args():
                          " no neighbours within this range are excluded")
     sc.add_argument("--dot-density", "-Dd", dest="density", type=float, default=1.5, required=False,
                     help="Density sampling value per Angstrom of area of the interface")
+    sc.add_argument("--weight", "-W", dest="weight", type=float, default=0.5, required=False,
+                    help="Weighting parameter  used in the calculation of the surface complementarity function S(A->B)")
 
     args = parser.parse_args()
 
@@ -60,6 +62,10 @@ def parse_args():
             sys.exit(1)
         elif args.density <= 0:
             print("--dot-density/-Dd must be non-negative")
+            parser.print_help()
+            sys.exit(1)
+        elif args.weight <= 0:
+            print("--weight/-W must be non-negative")
             parser.print_help()
             sys.exit(1)
         else:
