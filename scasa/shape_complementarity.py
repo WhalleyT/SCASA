@@ -224,25 +224,20 @@ class ShapeComplementarity:
         v3 = np.cross(v1, v2)
         return v3 / np.linalg.norm(v3)
 
-    def PCA_unit_vector(array, pca=PCA(n_components=3)):
-        pca.fit(array)
-        eigenvalues = pca.explained_variance_
-        return pca.components_[np.argmin(eigenvalues)]
-
     def calculate_normal(self, coordinate, mesh):
+        """
+
+        :param coordinate:
+        :param mesh:
+        :return:
+        """
+        #todo check if the positive/negativity of this matters
         tree = cKDTree(mesh)
         # Get indices and distances:
         dist, ind = tree.query(coordinate, k=3)
         combinations = mesh[ind]
 
-        #calculate normals using cross product
-        normals = self.calc_cross(combinations[:,0], combinations[:,1], combinations[:,2])
-        print(normals)
         normals = self.calc_cross(combinations[0], combinations[1], combinations[2])
-        print(normals)
-        normals = self.PCA_unit_vector(combinations)
-        print(normals)
-
 
     def sc(self):
         complex1, complex2 = self.create_interface()
