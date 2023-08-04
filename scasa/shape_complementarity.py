@@ -2,13 +2,13 @@ import math
 import random
 
 import numpy as np
-import scipy.spatial
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
-from scipy.spatial import cKDTree
+from scipy.spatial import cKDTree, Delaunay, ConvexHull
 from dataclasses import dataclass
 from itertools import compress
-from scipy.spatial import Delaunay
-from sklearn.decomposition import PCA
 
 
 @dataclass
@@ -132,7 +132,7 @@ class ShapeComplementarity:
         :param c: numpy array (in this case 3D
         :return: area, float
         """
-        est = scipy.spatial.ConvexHull(c)
+        est = ConvexHull(c)
         if self.verbose:
             print(f"Estimated area of complex 1's face is {est.area:.2f}Å\N{SUPERSCRIPT THREE}")
         return est.area
@@ -219,6 +219,13 @@ class ShapeComplementarity:
         return set_of_coords[nearest_coord[1]]
 
     def calc_cross(self, p1, p2, p3):
+        """
+        calculate cross product of three points
+        :param p1: point 1 np.array
+        :param p2: point 2 np.array
+        :param p3: point 2 np.array
+        :return: cross product np.array
+        """
         v1 = p2 - p1
         v2 = p3 - p1
         v3 = np.cross(v1, v2)
@@ -226,18 +233,58 @@ class ShapeComplementarity:
 
     def calculate_normal(self, coordinate, mesh):
         """
-
-        :param coordinate:
-        :param mesh:
-        :return:
+        Calculate surface normal from a point using its two neighbours
+        :param coordinate: coordinate of interest
+        :param mesh: mesh that the coordinate of interest is from.
+        :return: np.array normals, [x,y,z]
         """
         #todo check if the positive/negativity of this matters
+        #create
         tree = cKDTree(mesh)
-        # Get indices and distances:
+        # Get indices and distances. since dist=0 we will return our point of interest so no need to add
         dist, ind = tree.query(coordinate, k=3)
+        #get np array of sub indexes
         combinations = mesh[ind]
 
+        #calculate cross product
         normals = self.calc_cross(combinations[0], combinations[1], combinations[2])
+        return normals
+
+    def plot_sc(self, sc_complex_1, sc_complex_2):
+        complex_1 = pd.DataFrame(sc_complex_1, columns=["SC_function"])
+        complex_1["Complex"] = "Complex 1"
+        complex_2 = pd.DataFrame(sc_complex_2, columns=["SC_function"])
+        complex_2["Complex"] = "Complex 2"
+
+        complexes = pd.concat([complex_1, complex_2])
+
+        sns.histplot(data=complexes, x="SC_function", hue="Complex")
+        plt.show()
+
+
+    def calculate_sc(self, points_c1, points_c2, weight):
+        """
+        Calculates the surface complementarity function for every point in an array of points for a single complex.
+        That is SC(points_c1 -> points_c2)
+        :param points_c1: complex one, the part of the protein you are calculating for. np.array (3xn)
+        :param points_c2: complex two, the part of the protein you are calculating against. np.array (3xn)
+        :param weight: weighting parameter
+        :return: list of SC scores (float)
+        """
+        sc_array = []
+
+        for coordinate_complex_1 in points_c1:
+            coordinate_complex_2 = self.find_nearest_neighbour(coordinate_complex_1, points_c2)
+
+            normal_coord_complex_1 = self.calculate_normal(coordinate_complex_1, points_c1)
+            normal_coord_complex_2 = self.calculate_normal(coordinate_complex_2, points_c2)
+
+            distance_function = np.exp(-(weight) * np.linalg.norm(coordinate_complex_1-coordinate_complex_2))
+            dot_prod = np.dot(normal_coord_complex_1, normal_coord_complex_2)
+            sc = dot_prod * distance_function
+            sc_array.append(sc)
+        return sc_array
+
 
     def sc(self):
         complex1, complex2 = self.create_interface()
@@ -262,20 +309,11 @@ class ShapeComplementarity:
         points_c1 = self.random_points(complex1.coords, simplices_c1, n_dots_1)
         points_c2 = self.random_points(complex2.coords, simplices_c2, n_dots_2)
 
-        #for set of random points find nearest point
-        sc_a, sc_b = [], []
-        # todo calculate normals for neighbouring points
+        sc_complex_1 = self.calculate_sc(points_c1, points_c2, self.weight)
+        sc_complex_2 = self.calculate_sc(points_c2, points_c1, self.weight)
 
-        for coordinate_complex_1 in points_c1:
-            coordinate_complex_2 = self.find_nearest_neighbour(coordinate_complex_1, points_c2)
-
-            normal_coord_complex_1 = self.calculate_normal(coordinate_complex_1, points_c1)
-            normal_coord_complex_2 = self.calculate_normal(coordinate_complex_2, points_c2)
-
-
-        #sc = (np.median(np.array(sc_a)) + np.median(np.array(sc_b))) / 2
-        #print(sc)
-
+        if self.plot:
+            self.plot_sc(sc_complex_1, sc_complex_2)
 
 
     def get_column(self, param):

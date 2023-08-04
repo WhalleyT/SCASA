@@ -25,6 +25,8 @@ def parse_args():
     asa.add_argument("--level", "-L", dest="asa_level", type=str, default="R", required=False,
                      help="Level to calculate ASA and BSA to. They can be 'S' for complex, 'C' for chain"
                           " 'R' for residue, or 'A' for atom")
+    asa.add_argument("--verbose", "-v", dest="verbose",  action="store_true",
+                    help="Flag. If supplied, extra messages will be printed")
 
     # subparser for sc
     sc = subparsers.add_parser("sc", help="Calculate Shape Complementarity (SC) of a PDB complex")
@@ -45,6 +47,10 @@ def parse_args():
                     help="Density sampling value per Angstrom of area of the interface")
     sc.add_argument("--weight", "-W", dest="weight", type=float, default=0.5, required=False,
                     help="Weighting parameter  used in the calculation of the surface complementarity function S(A->B)")
+    sc.add_argument("--plot", "-pl", dest="plot", type=bool, default=False, required=False,
+                    help="Flag. If supplied then a plot of the SC function will be generated")
+    sc.add_argument("--verbose", "-v", dest="verbose", action="store_true",
+                    help="Flag. If supplied, extra messages will be printed")
 
     args = parser.parse_args()
 
