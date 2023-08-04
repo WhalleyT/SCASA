@@ -47,7 +47,7 @@ def parse_args():
                     help="Density sampling value per Angstrom of area of the interface")
     sc.add_argument("--weight", "-W", dest="weight", type=float, default=0.5, required=False,
                     help="Weighting parameter  used in the calculation of the surface complementarity function S(A->B)")
-    sc.add_argument("--plot", "-pl", dest="plot", type=bool, default=False, required=False,
+    sc.add_argument("--plot", "-pl", dest="plot", action="store_true",
                     help="Flag. If supplied then a plot of the SC function will be generated")
     sc.add_argument("--verbose", "-v", dest="verbose", action="store_true",
                     help="Flag. If supplied, extra messages will be printed")

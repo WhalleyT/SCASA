@@ -279,7 +279,8 @@ class ShapeComplementarity:
             normal_coord_complex_1 = self.calculate_normal(coordinate_complex_1, points_c1)
             normal_coord_complex_2 = self.calculate_normal(coordinate_complex_2, points_c2)
 
-            distance_function = np.exp(-(weight) * np.linalg.norm(coordinate_complex_1-coordinate_complex_2))
+            distance_function = np.exp(-(np.linalg.norm(coordinate_complex_1-coordinate_complex_2)**2) * weight)
+
             dot_prod = np.dot(normal_coord_complex_1, normal_coord_complex_2)
             sc = dot_prod * distance_function
             sc_array.append(sc)
@@ -309,10 +310,14 @@ class ShapeComplementarity:
         points_c1 = self.random_points(complex1.coords, simplices_c1, n_dots_1)
         points_c2 = self.random_points(complex2.coords, simplices_c2, n_dots_2)
 
+        if self.verbose:
+            print("Calculating SC for both complexes")
         sc_complex_1 = self.calculate_sc(points_c1, points_c2, self.weight)
         sc_complex_2 = self.calculate_sc(points_c2, points_c1, self.weight)
 
         if self.plot:
+            if self.verbose:
+                print("Generating plot for SC function")
             self.plot_sc(sc_complex_1, sc_complex_2)
 
 
