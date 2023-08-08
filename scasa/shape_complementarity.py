@@ -6,7 +6,11 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+import plotly.figure_factory as ff
+import plotly.express as px
+
 from scipy.spatial import cKDTree, Delaunay, ConvexHull
+from sklearn.decomposition import PCA
 from dataclasses import dataclass
 from itertools import compress
 
@@ -233,7 +237,8 @@ class ShapeComplementarity:
 
     def calculate_normal(self, coordinate, mesh):
         """
-        Calculate surface normal from a point using its two neighbours
+        Calculate surface normal from a point using its two neighbours.
+        I have used PCA as I can arbitarly adjust n neighbours.
         :param coordinate: coordinate of interest
         :param mesh: mesh that the coordinate of interest is from.
         :return: np.array normals, [x,y,z]
@@ -242,13 +247,15 @@ class ShapeComplementarity:
         #create
         tree = cKDTree(mesh)
         # Get indices and distances. since dist=0 we will return our point of interest so no need to add
-        dist, ind = tree.query(coordinate, k=3)
+        dist, ind = tree.query(coordinate, k=5)
         #get np array of sub indexes
         combinations = mesh[ind]
 
         #calculate cross product
-        normals = self.calc_cross(combinations[0], combinations[1], combinations[2])
-        return normals
+        pca = PCA(n_components=3)
+        pca.fit(combinations)
+        eigenvalues = pca.explained_variance_
+        return pca.components_[np.argmin(eigenvalues)]
 
     def plot_sc(self, sc_complex_1, sc_complex_2):
         complex_1 = pd.DataFrame(sc_complex_1, columns=["SC_function"])
@@ -283,8 +290,60 @@ class ShapeComplementarity:
 
             dot_prod = np.dot(normal_coord_complex_1, normal_coord_complex_2)
             sc = dot_prod * distance_function
+            print(sc, dot_prod, distance_function)
             sc_array.append(sc)
         return sc_array
+
+
+    def plot_combined_mesh(self, mesh1, mesh2, coords1, coords2):
+        x_1 = coords1[:, 0]
+        y_1 = coords1[:, 1]
+        z_1 = coords1[:, 2]
+
+        x_2 = coords2[:, 0]
+        y_2 = coords2[:, 1]
+        z_2 = coords2[:, 2]
+
+        x = np.concatenate([x_1, x_2])
+        y = np.concatenate([y_1, y_2])
+        z = np.concatenate([z_1, z_2])
+
+        mesh = np.concatenate([mesh1, mesh2])
+
+        colours = ["#EF553B"] * len(x_1) + ["#00CC96"] * len(x_2)
+
+        fig = ff.create_trisurf(x=x,y=y,z=z, simplices=mesh, colormap=colours, title="Surface of  Complex 1 and 2")
+        return fig
+
+    def plot_single_mesh(self, mesh, coords, title):
+        x = coords[:, 0]
+        y = coords[:, 1]
+        z = coords[:, 2]
+
+        fig = ff.create_trisurf(x=x,y=y,z=z, simplices=mesh, title=title)
+        return fig
+
+    def plot_atoms(self, c1, c2, title):
+        x_1 = c1[:, 0]
+        y_1 = c1[:, 1]
+        z_1 = c1[:, 2]
+
+        x_2 = c2[:, 0]
+        y_2 = c2[:, 1]
+        z_2 = c2[:, 2]
+
+        x = np.concatenate([x_1, x_2])
+        y = np.concatenate([y_1, y_2])
+        z = np.concatenate([z_1, z_2])
+
+        colours = ["Complex 1"] * len(x_1) + ["Complex 2"] * len(x_2)
+
+        df = pd.DataFrame(list(zip(x,y,z, colours)), columns=["X", "Y", "Z", "Complex"])
+
+        fig = px.scatter_3d(df, x='X', y='Y', z='Z',
+                            color='Complex', title=title)
+        return  fig
+
 
 
     def sc(self):
@@ -312,14 +371,23 @@ class ShapeComplementarity:
 
         if self.verbose:
             print("Calculating SC for both complexes")
+
         sc_complex_1 = self.calculate_sc(points_c1, points_c2, self.weight)
         sc_complex_2 = self.calculate_sc(points_c2, points_c1, self.weight)
 
-        if self.plot:
-            if self.verbose:
-                print("Generating plot for SC function")
-            self.plot_sc(sc_complex_1, sc_complex_2)
+        sc_score = (np.median(sc_complex_1) + np.median(sc_complex_2) ) / 2
+        if self.verbose:
+            print(f"SC = {sc_score:.2f}")
 
+        if self.plot:
+            p1 = self.plot_atoms(complex1.coords, complex2.coords, "Complex 1 and 2 selected atoms")
+            p2 = self.plot_combined_mesh(simplices_c1, simplices_c2, complex1.coords, complex2.coords)
+            p3 = self.plot_single_mesh(simplices_c1, complex1.coords, "Surface of  Complex 1")
+            p4 = self.plot_single_mesh(simplices_c2, complex2.coords, "Surface of  Complex 2")
+            p5 = self.plot_atoms(points_c1, points_c2, "Complex 1 and 2 randomly sampled atoms")
+
+            for p in [p1, p2, p3, p4, p5]:
+                p.show()
 
     def get_column(self, param):
         pass
